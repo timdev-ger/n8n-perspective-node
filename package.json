@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-perspective",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "n8n community node for Perspective.co (Funnels) — REST API actions and webhook trigger",
 	"license": "MIT",
 	"homepage": "https://github.com/timdev-ger/n8n-perspective-node#readme",
