@@ -41,7 +41,8 @@
 		],
 		"nodes": [
 			"dist/nodes/Perspective/Perspective.node.js",
-			"dist/nodes/PerspectiveTrigger/PerspectiveTrigger.node.js"
+			"dist/nodes/PerspectiveTrigger/PerspectiveTrigger.node.js",
+			"dist/nodes/PerspectivePollingTrigger/PerspectivePollingTrigger.node.js"
 		]
 	},
 	"devDependencies": {

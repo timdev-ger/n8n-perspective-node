@@ -5,11 +5,17 @@ import type {
 	IHttpRequestMethods,
 	IHttpRequestOptions,
 	ILoadOptionsFunctions,
+	IPollFunctions,
 	IDataObject,
 } from 'n8n-workflow';
 
 export async function perspectiveApiRequest(
-	this: IHookFunctions | IExecuteFunctions | IExecuteSingleFunctions | ILoadOptionsFunctions,
+	this:
+		| IHookFunctions
+		| IExecuteFunctions
+		| IExecuteSingleFunctions
+		| ILoadOptionsFunctions
+		| IPollFunctions,
 	method: IHttpRequestMethods,
 	resource: string,
 	qs: IDataObject = {},

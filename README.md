@@ -19,7 +19,8 @@
 ## ✨ Features
 
 - 🎯 **Action node** — paginated CRM, metrics & workspaces via the official REST API
-- ⚡ **Trigger node** — receive new leads and funnel completions in real time, no API key required
+- ⚡ **Webhook Trigger** — receive new leads and funnel completions in real time, no API key required
+- 🔁 **Polling Trigger** — schedule-based fetch of new contacts, fully automatic per-funnel selection
 - 🔍 **Funnel resource locator** — searchable dropdown of all your funnels, auto-loaded from `/v1/workspaces`
 - 🤖 **AI-tool ready** — the action node is `usableAsTool: true`, so AI agents can call Perspective directly
 - 🛡️ **API-key auth** — `x-perspective-api-key` header, validated against `/v1/workspaces` on save
@@ -29,7 +30,8 @@
 
 - [Installation](#installation)
 - [Operations](#operations)
-- [Trigger](#trigger)
+- [Webhook Trigger](#webhook-trigger)
+- [Polling Trigger](#polling-trigger)
 - [Credentials](#credentials)
 - [Compatibility](#compatibility)
 - [Resources](#resources)
@@ -78,7 +80,7 @@ All metric operations take a `from` / `to` ISO 8601 date range and an optional t
 |---|---|
 | Get Many | `GET /v1/workspaces` — list all workspaces and their funnels |
 
-## Trigger
+## Webhook Trigger
 
 The **Perspective Trigger** node receives outgoing webhooks from Perspective. Two events fire:
 
@@ -116,6 +118,38 @@ The **Perspective Trigger** node receives outgoing webhooks from Perspective. Tw
 
 > The trigger does **not** require an API key — webhook URLs are the secret. Keep your workflow URL private.
 
+## Polling Trigger
+
+The **Perspective Polling Trigger** node fetches new contacts on a schedule — no manual webhook setup in Perspective required. Just pick a funnel, set the polling interval, and the node emits new items each tick.
+
+### Setup
+
+1. Add a *Perspective Polling Trigger* to your workflow.
+2. Pick the funnel from the searchable dropdown (loaded via `/v1/workspaces`).
+3. Choose the event:
+   - **New Converted Lead** *(default)* — watermark on `meta.ps_converted_at`. Fires only when contacts submit email/phone.
+   - **New Contact** — watermark on `meta.ps_first_seen_at`. Fires for any visitor that lands and gets tracked.
+4. Set the polling schedule (every minute, hour, custom cron).
+5. Activate the workflow.
+
+### How it works
+
+- On every tick, the node calls `GET /v1/funnels/{funnelId}/contacts?sortField=ps_converted_at&sortOrder=-1&limit=100`.
+- The first poll establishes the watermark and emits nothing — this prevents flooding the workflow with historical leads on activation.
+- Subsequent polls emit only contacts whose watermark timestamp is **newer** than the last seen value, sorted oldest → newest.
+- Watermark is stored per-workflow-node via `staticData` and survives restarts.
+
+### When to use which trigger
+
+| Scenario | Recommended trigger |
+|---|---|
+| You're on the Free / Starter plan (no API key) | **Webhook Trigger** |
+| You want true real-time delivery | **Webhook Trigger** |
+| You want fully automatic setup, no Perspective dashboard touching | **Polling Trigger** |
+| You need historical contacts on workflow activation | Use **Action node** with a Schedule trigger |
+
+> The Polling Trigger requires an API key (Scale Plan / legacy Volume Plan). Each poll counts against your API quota.
+
 ## Credentials
 
 The action node requires a **Perspective API** credential.
@@ -143,7 +177,7 @@ The API is available from the **Scale Plan** (or legacy Volume Plan) onwards. Th
 
 ### 0.1.0
 
-- Initial release: action node (Contact CRUD, Metrics KPI/Chart/Insight, Workspaces) + trigger node (New Lead, Funnel Completed)
+- Initial release: action node (Contact CRUD, Metrics KPI/Chart/Insight, Workspaces) + webhook trigger (New Lead, Funnel Completed) + polling trigger (New Converted Lead, New Contact)
 
 ## License
 
