@@ -1,0 +1,18 @@
+{
+	"node": "n8n-nodes-perspective-trigger",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Marketing", "Sales"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://github.com/timdev-ger/n8n-perspective-node?tab=readme-ov-file#trigger"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://github.com/timdev-ger/n8n-perspective-node?tab=readme-ov-file#trigger"
+			}
+		]
+	}
+}
